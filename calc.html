@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dynamic JavaScript Calculator</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg,#1f1c2c,#928dab);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.calculator{
+    background:#222;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 0 20px rgba(0,0,0,0.5);
+    width:260px;
+}
+
+#display{
+    width:100%;
+    height:60px;
+    font-size:24px;
+    text-align:right;
+    padding:10px;
+    margin-bottom:15px;
+    border:none;
+    border-radius:8px;
+    background:#000;
+    color:#0f0;
+}
+
+.buttons{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+}
+
+button{
+    height:50px;
+    font-size:18px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#444;
+    color:white;
+    transition:0.2s;
+}
+
+button:hover{
+    background:#666;
+}
+
+.operator{
+    background:#ff9500;
+}
+
+.equal{
+    background:#28a745;
+}
+
+.clear{
+    background:#dc3545;
+}
+</style>
+</head>
+
+<body>
+
+<div id="app"></div>
+
+<script>
+/* ---------- CREATE CALCULATOR DYNAMICALLY ---------- */
+
+const app = document.getElementById("app");
+
+// calculator container
+const calculator = document.createElement("div");
+calculator.className = "calculator";
+
+// display
+const display = document.createElement("input");
+display.id = "display";
+display.type = "text";
+display.disabled = true;
+
+calculator.appendChild(display);
+
+// buttons layout
+const buttonsLayout = [
+    "7","8","9","/",
+    "4","5","6","*",
+    "1","2","3","-",
+    "0",".","=","+",
+    "C"
+];
+
+const buttonsDiv = document.createElement("div");
+buttonsDiv.className = "buttons";
+
+/* ---------- BUTTON CREATION ---------- */
+
+buttonsLayout.forEach(value => {
+
+    const btn = document.createElement("button");
+    btn.textContent = value;
+
+    if(["+","-","*","/"].includes(value))
+        btn.classList.add("operator");
+
+    if(value === "=")
+        btn.classList.add("equal");
+
+    if(value === "C")
+        btn.classList.add("clear");
+
+    btn.addEventListener("click", () => handleInput(value));
+
+    buttonsDiv.appendChild(btn);
+});
+
+calculator.appendChild(buttonsDiv);
+app.appendChild(calculator);
+
+/* ---------- CALCULATOR LOGIC ---------- */
+
+function handleInput(value){
+
+    if(value === "C"){
+        display.value = "";
+        return;
+    }
+
+    if(value === "="){
+        try{
+            display.value = eval(display.value);
+        }catch{
+            display.value = "Error";
+        }
+        return;
+    }
+
+    display.value += value;
+}
+
+/* ---------- KEYBOARD SUPPORT ---------- */
+
+document.addEventListener("keydown",(e)=>{
+    const allowed = "0123456789+-*/.";
+    if(allowed.includes(e.key)){
+        display.value += e.key;
+    }
+    if(e.key === "Enter"){
+        display.value = eval(display.value);
+    }
+    if(e.key === "Backspace"){
+        display.value = display.value.slice(0,-1);
+    }
+});
+</script>
+
+</body>
+</html>
